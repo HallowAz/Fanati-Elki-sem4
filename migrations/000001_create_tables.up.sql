@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS public.users
     id SERIAL NOT NULL,
     username TEXT UNIQUE NOT NULL,
 	password TEXT NOT NULL,
-	age INT NOT NULL,
+    birthday TIMESTAMP NOT NULL,
 	gender TEXT NOT NULL,
     about TEXT,
     telegram TEXT UNIQUE NOT NULL,
