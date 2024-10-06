@@ -59,8 +59,6 @@ BEFORE UPDATE ON user_reviews
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TYPE category as enum ('park', 'museum', 'concert');
-
 CREATE TABLE IF NOT EXISTS public.places
 (
     id SERIAL NOT NULL,
@@ -70,7 +68,7 @@ CREATE TABLE IF NOT EXISTS public.places
     photos TEXT[],
     "description" TEXT,
     group_count INT NOT NULL,
-    categories category[],
+    categories TEXT[],
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
 	updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     PRIMARY KEY (id)
