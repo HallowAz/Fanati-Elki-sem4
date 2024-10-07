@@ -63,10 +63,11 @@ func main() {
 
 	fmt.Println("Server start at port", PORT[1:])
 
+	log.Println("Started on port", PORT)
 	fmt.Println("To close connection CTRL+C :-)")
 
 	// Spinning up the server.
-	err := http.ListenAndServe("127.0.0.1"+PORT, nil)
+	err := http.ListenAndServe("0.0.0.0"+PORT, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -16,8 +16,8 @@ FROM alpine AS runner
 
 COPY --from=builder /usr/local/src/bin/server /
 
-ENV PORT 8080
+ENV PORT 3333
 
 EXPOSE ${PORT}
 
-CMD ["/server", "127.0.0.1"]
+CMD ["/server", "0.0.0.0"]
