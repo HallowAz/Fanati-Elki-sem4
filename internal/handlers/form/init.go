@@ -1,6 +1,11 @@
 package form
 
 // Для каждого публичного метода отдельный файл, поскольку так легче искать и теститься
+import (
+	"context"
+
+	models "fe-sem4/internal/models/form"
+)
 
 type formManager interface {
 	// Здесь все методы слоя менеджеров
@@ -9,14 +14,16 @@ type formManager interface {
 	// сразу слой репы
 }
 
-type formStorer interface {
-	// Слой репы, о котором написано выше
+type problemStorer interface {
+	CreateForm(ctx context.Context, problem models.Problem) error
+	GetProblems(ctx context.Context) ([]*models.Problem, error)
 }
 
 type Handler struct {
-	formManager formManager
+	formManager   formManager
+	problemStorer problemStorer
 }
 
-func NewFormHandler(formManager formManager) *Handler {
-	return &Handler{formManager: formManager}
+func NewFormHandler(formManager formManager, problemStorer problemStorer) *Handler {
+	return &Handler{formManager: formManager, problemStorer: problemStorer}
 }
