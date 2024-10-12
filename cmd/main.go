@@ -13,14 +13,14 @@ import (
 )
 
 var (
-	host   = "test_postgres"
+	host   = "83.166.237.142"
 	port   = 5432
-	user   = "uliana"
-	dbname = "gorod"
+	user   = "postgres"
+	dbname = "fe-sem4"
 
 	psqlInfo = fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		host, port, user, "uliana", dbname)
+		host, port, user, "password123", dbname)
 )
 
 func main() {
