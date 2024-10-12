@@ -45,6 +45,11 @@ func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
 
 	err = h.problemStorer.CreateForm(context.Background(), problem)
 	if err != nil {
+		err = json.NewEncoder(w).Encode(&Error{Err: err.Error()})
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
