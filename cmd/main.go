@@ -10,7 +10,6 @@ import (
 	form_handlers_lib "fe-sem4/internal/handlers/form"
 	form_managers_lib "fe-sem4/internal/managers/form"
 	"fe-sem4/internal/repository"
-	_ "github.com/lib/pq"
 )
 
 var (
@@ -40,7 +39,7 @@ func main() {
 	// Просто для проверки работоспособности
 	// Можно на гориллу переделать, если удобно с ней
 	http.HandleFunc("/newproblem", formHandler.CreateForm)
-	http.HandleFunc("/problems", formHandler.CreateForm)
+	http.HandleFunc("/problems", formHandler.GetProblems)
 
 	fmt.Printf("Server start at: %s", config.ServerPort)
 	err = http.ListenAndServe(config.ServerPort, nil)
