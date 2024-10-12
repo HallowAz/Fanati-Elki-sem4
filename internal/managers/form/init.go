@@ -1,11 +1,15 @@
 package form
 
-import "context"
+import (
+	"context"
+
+	models "fe-sem4/internal/models/form"
+)
 
 // Также все методы в отдельный файлах в том же пакете. Название файла - название метода
 
 type formStorer interface {
-	CreateForm(ctx context.Context)
+	CreateForm(ctx context.Context, problem models.Problem) error
 }
 
 type Manager struct {
