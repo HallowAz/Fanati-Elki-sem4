@@ -10,6 +10,7 @@ import (
 	form_handlers_lib "fe-sem4/internal/handlers/form"
 	form_managers_lib "fe-sem4/internal/managers/form"
 	"fe-sem4/internal/repository"
+	_ "github.com/lib/pq"
 )
 
 var (
