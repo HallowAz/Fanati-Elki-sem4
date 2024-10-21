@@ -1,12 +1,9 @@
-package form
+package problem
 
 import (
-	"context"
 	"encoding/json"
 	"io"
 	"net/http"
-
-	models "fe-sem4/internal/models/form"
 )
 
 type Result struct {
@@ -20,30 +17,33 @@ type Error struct {
 func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	jsonbody, err := io.ReadAll(r.Body)
-
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		err = json.NewEncoder(w).Encode(&Error{Err: "problems with reading data"})
+
+		err = json.NewEncoder(w).Encode(&Error{Err: "problems while reading data"})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
+
 		return
 	}
 
-	problem := models.Problem{}
-	err = json.Unmarshal(jsonbody, &problem)
+	problemDTO := CreateProblemRequest{}
 
+	err = json.Unmarshal(body, &problemDTO)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		err = json.NewEncoder(w).Encode(&Error{Err: "problems with unmarshaling json"})
+
+		err = json.NewEncoder(w).Encode(&Error{Err: "problems while unmarshalling JSON"})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
+
 		return
 	}
 
-	err = h.problemStorer.CreateForm(context.Background(), problem)
+	err = h.problemStorer.CreateForm(r.Context(), problemDTO.ToModel())
 	if err != nil {
 		err = json.NewEncoder(w).Encode(&Error{Err: err.Error()})
 		if err != nil {
@@ -53,4 +53,5 @@ func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
+	return
 }

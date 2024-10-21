@@ -1,4 +1,4 @@
-package form
+package problem
 
 type Problem struct {
 	ID               int

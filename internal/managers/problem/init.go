@@ -1,9 +1,9 @@
-package form
+package problem
 
 import (
 	"context"
 
-	models "fe-sem4/internal/models/form"
+	models "fe-sem4/internal/models/problem"
 )
 
 // Также все методы в отдельный файлах в том же пакете. Название файла - название метода

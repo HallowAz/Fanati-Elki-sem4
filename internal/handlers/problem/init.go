@@ -1,10 +1,10 @@
-package form
+package problem
 
 // Для каждого публичного метода отдельный файл, поскольку так легче искать и теститься
 import (
 	"context"
 
-	models "fe-sem4/internal/models/form"
+	models "fe-sem4/internal/models/problem"
 )
 
 type formManager interface {
@@ -16,7 +16,7 @@ type formManager interface {
 
 type problemStorer interface {
 	CreateForm(ctx context.Context, problem models.Problem) error
-	GetProblems(ctx context.Context) ([]*models.Problem, error)
+	//GetProblems(ctx context.Context) ([]*models.Problem, error)
 }
 
 type Handler struct {
