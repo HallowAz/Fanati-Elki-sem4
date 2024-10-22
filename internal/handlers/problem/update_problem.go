@@ -2,20 +2,18 @@ package problem
 
 import (
 	"encoding/json"
+	"fe-sem4/internal/tools"
+	"github.com/gorilla/mux"
 	"io"
 	"log"
 	"net/http"
 )
 
-type Result struct {
-	Body interface{}
-}
+const idParam = "id"
 
-type Error struct {
-	Err string
-}
+func (h *Handler) UpdateProblem(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
-func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -28,7 +26,19 @@ func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	problemDTO := createProblemRequest{}
+	vars := mux.Vars(r)
+	idStr := vars[idParam]
+
+	id, err := tools.StrToUint32(idStr)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	problemDTO := updateProblemRequest{
+		ID: id,
+	}
 
 	err = json.Unmarshal(body, &problemDTO)
 	if err != nil {
@@ -42,16 +52,11 @@ func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.problemStorer.CreateForm(r.Context(), problemDTO.toModel())
+	err = h.problemStorer.UpdateProblem(r.Context(), problemDTO.toModel())
 	if err != nil {
 		log.Println(err)
 
-		err = json.NewEncoder(w).Encode(&Error{Err: err.Error()})
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-		}
-
-		w.WriteHeader(http.StatusInternalServerError)
+		processError(w, err)
 	}
 
 	return

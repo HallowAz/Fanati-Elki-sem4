@@ -3,13 +3,13 @@ package problem
 import "fe-sem4/internal/models/problem"
 
 type ProblemRow struct {
-	ID               int      `db:"id"`
+	ID               uint32   `db:"id"`
 	Title            string   `db:"title"`
 	Description      string   `db:"description"`
 	SpecificLocation string   `db:"specific_location"`
 	Category         string   `db:"category"`
 	Media            []string `db:"media"`
-	VoteCount        int      `db:"vote_count"`
+	VoteCount        uint16   `db:"vote_count"`
 	Lat              string   `db:"lat"`
 	Long             string   `db:"long"`
 }
@@ -25,5 +25,19 @@ func NewProblemRow(model problem.Problem) ProblemRow {
 		VoteCount:        model.VoteCount,
 		Lat:              model.Lat,
 		Long:             model.Long,
+	}
+}
+
+func (r *ProblemRow) ToModel() problem.Problem {
+	return problem.Problem{
+		ID:               r.ID,
+		Title:            r.Title,
+		Description:      r.Description,
+		SpecificLocation: r.SpecificLocation,
+		Category:         r.Category,
+		Media:            r.Media,
+		VoteCount:        r.VoteCount,
+		Lat:              r.Lat,
+		Long:             r.Long,
 	}
 }

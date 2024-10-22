@@ -3,13 +3,14 @@ package problem
 import (
 	"context"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 // Здесь описываются чисто sql запросы и походы в бд,
 // я бы хотел пользоваться pgx сразу, но если не успеваешь, то используй любой
 // Тут чисто функции, без структуры, так будет проще, когда надо будет комбинировать
 
-func CreateForm(ctx context.Context, tx pgx.Tx, problemRow ProblemRow) error {
+func CreateProblem(ctx context.Context, tx pgx.Tx, problemRow ProblemRow) error {
 	const query = `
 		INSERT INTO 
 		    problems (
@@ -38,41 +39,51 @@ func CreateForm(ctx context.Context, tx pgx.Tx, problemRow ProblemRow) error {
 	return err
 }
 
-//func GetForms(ctx context.Context, db *sql.DB) ([]*models.Problem, error) {
-//	const selectProblems = `
-//		SELECT id, title, description, specific_location, category, vote_count, lat, long
-//		FROM problems`
-//	var problems []*models.Problem
-//	rows, err := db.Query(selectProblems)
-//	if err != nil {
-//		return nil, fmt.Errorf("query failed: %w", err)
-//	}
-//
-//	defer rows.Close()
-//
-//	for rows.Next() {
-//		problem := &models.Problem{}
-//		err = rows.Scan(
-//			&problem.ID,
-//			&problem.Title,
-//			&problem.Description,
-//			&problem.SpecificLocation,
-//			&problem.Category,
-//			&problem.VoteCount,
-//			&problem.Lat,
-//			&problem.Long,
-//		)
-//		if err != nil {
-//			return nil, err
-//		}
-//		problems = append(problems, problem)
-//	}
-//	err = rows.Err()
-//	if err != nil {
-//		if err == sql.ErrNoRows {
-//			return nil, nil
-//		}
-//		return nil, fmt.Errorf("failed to read problems: %w", err)
-//	}
-//	return problems, nil
-//}
+func GetProblems(ctx context.Context, tx pgx.Tx) ([]ProblemRow, error) {
+	const query = `
+		SELECT
+		    id,
+		    title,
+		    description,
+		    specific_location,
+		    category,
+		    media,
+		    vote_count,
+		    lat,
+		    long
+		FROM problems`
+
+	rows, err := tx.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	return pgx.CollectRows(rows, pgx.RowToStructByNameLax[ProblemRow])
+}
+
+func UpdateProblem(ctx context.Context, tx pgx.Tx, problemRow ProblemRow) (pgconn.CommandTag, error) {
+	const query = `
+		UPDATE problems
+	    SET title = $1,
+	        description = $2,
+	        specific_location = $3,
+	        category = $4,
+	        media = $5,
+	        vote_count = $6,
+	        lat = $7,
+	        long = $8
+		WHERE id = $9`
+
+	affected, err := tx.Exec(ctx, query,
+		problemRow.Title,
+		problemRow.Description,
+		problemRow.SpecificLocation,
+		problemRow.Category,
+		problemRow.Media,
+		problemRow.VoteCount,
+		problemRow.Lat,
+		problemRow.Long,
+		problemRow.ID)
+
+	return affected, err
+}

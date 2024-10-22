@@ -9,6 +9,7 @@ import (
 	"fe-sem4/internal/repository/db"
 	"fe-sem4/metrics"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"log"
@@ -33,6 +34,7 @@ var (
 
 func main() {
 	ctx := context.Background()
+	router := mux.NewRouter()
 
 	poolConfig, err := pgxpool.ParseConfig(connStr)
 	if err != nil {
@@ -43,8 +45,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Connect to database failed: %v\n", err)
 	}
-
-	fmt.Println("Connection OK!")
 
 	// Проверка соединения с базой данных
 	err = pool.Ping(ctx)
@@ -58,18 +58,17 @@ func main() {
 	formManager := form_managers_lib.NewManager(formRepo)
 	formHandler := form_handlers_lib.NewFormHandler(formManager, formRepo)
 
-	//// Просто для проверки работоспособности
-	//// Можно на гориллу переделать, если удобно с ней
-	http.HandleFunc("/problem", formHandler.CreateForm)
-	//http.HandleFunc("/problems", formHandler.GetProblems)
+	router.HandleFunc("/problems", formHandler.CreateForm).Methods(http.MethodPost)
+	router.HandleFunc("/problems", formHandler.GetProblems).Methods(http.MethodGet)
+	router.HandleFunc("/problems/{id}", formHandler.UpdateProblem).Methods(http.MethodPatch)
 
 	go func() {
 		_ = metrics.Listen("127.0.0.1:8082")
 	}()
 
-	fmt.Printf("Server start at: %s", config.ServerPort)
-	err = http.ListenAndServe(config.ServerPort, nil)
+	fmt.Printf("Server start at: %s\n", config.ServerPort)
+	err = http.ListenAndServe(config.ServerPort, router)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 }

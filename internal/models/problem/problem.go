@@ -1,13 +1,13 @@
 package problem
 
 type Problem struct {
-	ID               int
+	ID               uint32
 	Title            string
 	Description      string
 	SpecificLocation string
 	Category         string
 	Media            []string
-	VoteCount        int
+	VoteCount        uint16
 	Lat              string
 	Long             string
 }
