@@ -17,7 +17,7 @@ type Error struct {
 	Err string
 }
 
-func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	jsonbody, err := io.ReadAll(r.Body)
@@ -31,8 +31,8 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	problem := models.User{}
-	err = json.Unmarshal(jsonbody, &problem)
+	user := models.User{}
+	err = json.Unmarshal(jsonbody, &user)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -43,8 +43,11 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.userStorer.CreateUser(context.Background(), problem)
+	err = h.userManager.SignUp(context.Background(), &user)
 	if err != nil {
+		if err == models.ErrConflictPhoneNumber {
+			w.WriteHeader(http.StatusBadRequest)
+		}
 		err = json.NewEncoder(w).Encode(&Error{Err: err.Error()})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

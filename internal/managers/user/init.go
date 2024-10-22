@@ -8,6 +8,8 @@ import (
 
 type userStorer interface {
 	CreateUser(ctx context.Context, user models.User) error
+	FindUserByPhone(ctx context.Context, phone string) (*models.User, error)
+	FindUserByID(ctx context.Context, id uint) (*models.User, error)
 }
 
 type Manager struct {
