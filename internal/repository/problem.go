@@ -78,6 +78,28 @@ func (f *ProblemRepo) UpdateProblem(ctx context.Context, problem models.Problem)
 	if err != nil {
 		return fmt.Errorf("failed to update problem: %w", err)
 	}
+
+	if affected.RowsAffected() == 0 {
+		return domain_error.ErrProblemNotFound
+	}
+
+	return nil
+}
+
+func (f *ProblemRepo) DeleteProblem(ctx context.Context, id uint32) error {
+	var (
+		affected pgconn.CommandTag
+		err      error
+	)
+
+	err = f.db.InTx(ctx, func(ctx context.Context, tx pgx.Tx) error {
+		affected, err = problem_db.DeleteProblem(ctx, tx, id)
+		return err
+	})
+	if err != nil {
+		return fmt.Errorf("failed to delete problem: %w", err)
+	}
+
 	if affected.RowsAffected() == 0 {
 		return domain_error.ErrProblemNotFound
 	}

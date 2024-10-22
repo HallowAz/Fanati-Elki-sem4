@@ -2,14 +2,12 @@ package problem
 
 import (
 	"encoding/json"
+	"io"
+	"net/http"
+
 	"fe-sem4/internal/tools"
 	"github.com/gorilla/mux"
-	"io"
-	"log"
-	"net/http"
 )
-
-const idParam = "id"
 
 func (h *Handler) UpdateProblem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -54,8 +52,6 @@ func (h *Handler) UpdateProblem(w http.ResponseWriter, r *http.Request) {
 
 	err = h.problemStorer.UpdateProblem(r.Context(), problemDTO.toModel())
 	if err != nil {
-		log.Println(err)
-
 		processError(w, err)
 	}
 

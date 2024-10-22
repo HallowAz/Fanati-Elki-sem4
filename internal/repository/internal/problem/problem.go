@@ -2,6 +2,7 @@ package problem
 
 import (
 	"context"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 )
@@ -51,7 +52,8 @@ func GetProblems(ctx context.Context, tx pgx.Tx) ([]ProblemRow, error) {
 		    vote_count,
 		    lat,
 		    long
-		FROM problems`
+		FROM problems
+		WHERE is_deleted = false`
 
 	rows, err := tx.Query(ctx, query)
 	if err != nil {
@@ -72,7 +74,7 @@ func UpdateProblem(ctx context.Context, tx pgx.Tx, problemRow ProblemRow) (pgcon
 	        vote_count = $6,
 	        lat = $7,
 	        long = $8
-		WHERE id = $9`
+		WHERE id = $9 AND is_deleted = false`
 
 	affected, err := tx.Exec(ctx, query,
 		problemRow.Title,
@@ -84,6 +86,17 @@ func UpdateProblem(ctx context.Context, tx pgx.Tx, problemRow ProblemRow) (pgcon
 		problemRow.Lat,
 		problemRow.Long,
 		problemRow.ID)
+
+	return affected, err
+}
+
+func DeleteProblem(ctx context.Context, tx pgx.Tx, id uint32) (pgconn.CommandTag, error) {
+	const query = `
+		UPDATE problems
+		SET is_deleted = true
+		WHERE id = $1 AND is_deleted = false`
+
+	affected, err := tx.Exec(ctx, query, id)
 
 	return affected, err
 }

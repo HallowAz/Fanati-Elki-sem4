@@ -3,7 +3,6 @@ package problem
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -44,14 +43,7 @@ func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
 
 	err = h.problemStorer.CreateForm(r.Context(), problemDTO.toModel())
 	if err != nil {
-		log.Println(err)
-
-		err = json.NewEncoder(w).Encode(&Error{Err: err.Error()})
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-		}
-
-		w.WriteHeader(http.StatusInternalServerError)
+		processError(w, err)
 	}
 
 	return

@@ -2,10 +2,11 @@ package problem
 
 import (
 	"encoding/json"
-	models "fe-sem4/internal/models/problem"
 	"log"
 	"net/http"
 	"time"
+
+	models "fe-sem4/internal/models/problem"
 )
 
 func (h *Handler) GetProblems(w http.ResponseWriter, r *http.Request) {
@@ -19,16 +20,12 @@ func (h *Handler) GetProblems(w http.ResponseWriter, r *http.Request) {
 	problems, err := h.problemStorer.GetProblems(r.Context())
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		processError(w, err)
 	}
 
 	err = json.NewEncoder(w).Encode(&Result{Body: h.repackGetProblems(problems)})
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		err = json.NewEncoder(w).Encode(&Error{Err: "error while marshalling JSON"})
-		if err != nil {
-			log.Println(err)
-		}
+		processError(w, err)
 
 		return
 	}
