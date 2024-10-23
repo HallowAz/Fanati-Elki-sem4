@@ -31,8 +31,8 @@ func (h *Handler) GetProblems(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handler) repackGetProblems(problems []models.Problem) GetProblemsResponse {
-	var resp = GetProblemsResponse{
+func (h *Handler) repackGetProblems(problems []models.Problem) getProblemsResponse {
+	var resp = getProblemsResponse{
 		Problems: make([]getProblemResponse, 0, len(problems)),
 	}
 

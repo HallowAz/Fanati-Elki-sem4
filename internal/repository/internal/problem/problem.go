@@ -100,3 +100,26 @@ func DeleteProblem(ctx context.Context, tx pgx.Tx, id uint32) (pgconn.CommandTag
 
 	return affected, err
 }
+
+func GetProblemById(ctx context.Context, tx pgx.Tx, id uint32) (ProblemRow, error) {
+	const query = `
+		SELECT
+		    id,
+		    title,
+		    description,
+		    specific_location,
+		    category,
+		    media,
+		    vote_count,
+		    lat,
+		    long
+		FROM problems
+		WHERE id = $1 AND is_deleted = false`
+
+	row, err := tx.Query(ctx, query, id)
+	if err != nil {
+		return ProblemRow{}, err
+	}
+
+	return pgx.CollectOneRow(row, pgx.RowToStructByNameLax[ProblemRow])
+}

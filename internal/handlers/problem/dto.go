@@ -24,7 +24,7 @@ func (c *createProblemRequest) toModel() problem.Problem {
 	}
 }
 
-type GetProblemsResponse struct {
+type getProblemsResponse struct {
 	Problems []getProblemResponse `json:"problems"`
 }
 

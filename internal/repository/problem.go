@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fe-sem4/internal/models/domain_error"
 	"fmt"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -105,4 +106,25 @@ func (f *ProblemRepo) DeleteProblem(ctx context.Context, id uint32) error {
 	}
 
 	return nil
+}
+
+func (f *ProblemRepo) GetProblemByID(ctx context.Context, id uint32) (models.Problem, error) {
+	var (
+		row problem_db.ProblemRow
+		err error
+	)
+
+	err = f.db.InTx(ctx, func(ctx context.Context, tx pgx.Tx) error {
+		row, err = problem_db.GetProblemById(ctx, tx, id)
+		return err
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return models.Problem{}, domain_error.ErrProblemNotFound
+		}
+
+		return models.Problem{}, fmt.Errorf("failed to get problem: %w", err)
+	}
+
+	return row.ToModel(), nil
 }

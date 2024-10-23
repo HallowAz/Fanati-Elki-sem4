@@ -12,6 +12,16 @@ import (
 func (h *Handler) UpdateProblem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	vars := mux.Vars(r)
+	idStr := vars[idParam]
+
+	id, err := tools.StrToUint32(idStr)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -20,16 +30,6 @@ func (h *Handler) UpdateProblem(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-
-		return
-	}
-
-	vars := mux.Vars(r)
-	idStr := vars[idParam]
-
-	id, err := tools.StrToUint32(idStr)
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
 
 		return
 	}
