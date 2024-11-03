@@ -39,11 +39,11 @@ func InitConfig(configPath string) error {
 	DBName = os.Getenv("POSTGRES_DB")
 	DBConnString = fmt.Sprintf("%s://%s:%s@%s:%s/%s?sslmode=disable&connect_timeout=%d",
 		DBType,
-		DBUser,     // Замените на имя пользователя
-		DBPassword, // Замените на пароль
-		DBHost,     // Хост базы данных
-		DBPort,     // Порт базы данных
-		DBName,     // Название базы данных
+		DBUser,
+		DBPassword,
+		DBHost,
+		DBPort,
+		DBName,     
 		connectToDBTimeout)
 
 	return nil
