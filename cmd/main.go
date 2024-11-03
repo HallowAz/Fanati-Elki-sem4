@@ -41,7 +41,7 @@ func main() {
 
 	userRepo := repository.NewUserRepo(dbTX)
 	userManager := user_managers_lib.NewUserManager(userRepo)
-	userHandler := user_handler_lib.NewUserHandler(userManager)
+	userHandler := user_handler_lib.NewUserHandler(userManager, userRepo)
 
 	problemHandler.RegisterRoutes(router)
 	userHandler.RegisterRoutes(router)

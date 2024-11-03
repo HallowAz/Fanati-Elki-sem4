@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fe-sem4/internal/models/domain_error"
+	models "fe-sem4/internal/models/user"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-
-	models "fe-sem4/internal/models/user"
 )
+
+const idParam = "id"
 
 type Result struct {
 	Body interface{}
@@ -24,16 +25,28 @@ type userManager interface {
 	SignUp(ctx context.Context, user models.User) error
 }
 
-type Handler struct {
-	userManager userManager
+type userStorer interface {
+	GetUserByID(ctx context.Context, id uint32) (models.User, error)
 }
 
-func NewUserHandler(userManager userManager) *Handler {
-	return &Handler{userManager: userManager}
+type Handler struct {
+	userManager userManager
+	userStorer  userStorer
+}
+
+func NewUserHandler(
+	userManager userManager,
+	userStorer userStorer,
+) *Handler {
+	return &Handler{
+		userManager: userManager,
+		userStorer:  userStorer,
+	}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/users", h.CreateUser).Methods(http.MethodPost)
+	router.HandleFunc("/users/{id}", h.GetUserByID).Methods(http.MethodGet)
 }
 
 func processError(w http.ResponseWriter, err error) {

@@ -1,7 +1,6 @@
 package user
 
 import (
-	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -21,7 +20,7 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userDTO := CreateUserRequest{}
+	userDTO := createUserRequest{}
 	err = json.Unmarshal(body, &userDTO)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -32,7 +31,7 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.userManager.SignUp(context.Background(), userDTO.ToModel())
+	err = h.userManager.SignUp(r.Context(), userDTO.ToModel())
 	if err != nil {
 		processError(w, err)
 	}
