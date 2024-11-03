@@ -9,7 +9,9 @@ import (
 	"fe-sem4/config"
 	"fe-sem4/infra"
 	problem_handlers_lib "fe-sem4/internal/handlers/problem"
+	user_handler_lib "fe-sem4/internal/handlers/user"
 	problem_managers_lib "fe-sem4/internal/managers/problem"
+	user_managers_lib "fe-sem4/internal/managers/user"
 	"fe-sem4/internal/repository"
 	"fe-sem4/internal/repository/db"
 	"fe-sem4/metrics"
@@ -37,7 +39,12 @@ func main() {
 	problemManager := problem_managers_lib.NewManager(problemRepo)
 	problemHandler := problem_handlers_lib.NewFormHandler(problemManager, problemRepo)
 
+	userRepo := repository.NewUserRepo(dbTX)
+	userManager := user_managers_lib.NewUserManager(userRepo)
+	userHandler := user_handler_lib.NewUserHandler(userManager)
+
 	problemHandler.RegisterRoutes(router)
+	userHandler.RegisterRoutes(router)
 
 	go func() {
 		_ = metrics.Listen("127.0.0.1:8082")

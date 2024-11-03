@@ -35,7 +35,7 @@ func (c *Committer) InTx(ctx context.Context, fn func(ctx context.Context, tx pg
 	// Обеспечиваем откат в случае ошибки
 	defer func() {
 		if p := recover(); p != nil {
-			err = tx.Rollback(ctx)
+			_ = tx.Rollback(ctx)
 
 			panic(p)
 
@@ -43,7 +43,7 @@ func (c *Committer) InTx(ctx context.Context, fn func(ctx context.Context, tx pg
 		}
 
 		if err != nil {
-			err = tx.Rollback(ctx)
+			_ = tx.Rollback(ctx)
 
 			return
 		}
@@ -53,5 +53,5 @@ func (c *Committer) InTx(ctx context.Context, fn func(ctx context.Context, tx pg
 
 	err = fn(ctx, tx)
 
-	return err
+	return
 }
