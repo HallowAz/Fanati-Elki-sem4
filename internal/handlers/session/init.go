@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fe-sem4/internal/models/domain_error"
+	"fe-sem4/internal/models/session"
 	models "fe-sem4/internal/models/user"
 	"github.com/gorilla/mux"
 	"log"
@@ -23,18 +24,28 @@ type sessionManager interface {
 	Login(ctx context.Context, checkUser models.User) (string, error)
 }
 
-type SessionHandler struct {
-	sessionManager sessionManager
+type sessionGetter interface {
+	GetSession(ctx context.Context, key string) (session.Session, error)
 }
 
-func NewSessionHandler(sessionManager sessionManager) *SessionHandler {
+type SessionHandler struct {
+	sessionManager sessionManager
+	sessionGetter  sessionGetter
+}
+
+func NewSessionHandler(
+	sessionManager sessionManager,
+	sessionGetter sessionGetter,
+) *SessionHandler {
 	return &SessionHandler{
 		sessionManager: sessionManager,
+		sessionGetter:  sessionGetter,
 	}
 }
 
-func (h *SessionHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/session", h.Login).Methods(http.MethodPost)
+func (s *SessionHandler) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/session", s.Login).Methods(http.MethodPost)
+	router.HandleFunc("/session", s.Auth).Methods(http.MethodGet)
 }
 
 func processError(w http.ResponseWriter, err error) {

@@ -5,7 +5,6 @@ import (
 	"fe-sem4/config"
 	"io"
 	"net/http"
-	"time"
 )
 
 func (s *SessionHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -42,10 +41,5 @@ func (s *SessionHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.SetCookie(w, &http.Cookie{
-		Name:     config.CookieName,
-		Value:    cookie,
-		Expires:  time.Now().Add(config.SessionExpTime),
-		HttpOnly: true,
-	})
+	w.Header().Set(config.CookieHeader, cookie)
 }

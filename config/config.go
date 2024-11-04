@@ -16,7 +16,7 @@ const (
 	connectToDBTimeout = 5
 	SessionExpTime     = time.Hour * 128
 	CookieLen          = 10
-	CookieName         = "session_id"
+	CookieHeader       = "X-Auth-Token"
 	RedisHost          = "localhost"
 	RedisPort          = ":6379"
 )

@@ -52,7 +52,7 @@ func main() {
 	userManager := user_managers_lib.NewUserManager(userRepo, sessionRepo)
 	userHandler := user_handler_lib.NewUserHandler(userManager, userRepo)
 	sessionManager := session_manager_lib.NewSessionManager(sessionRepo, userRepo)
-	sessionHandler := session_handler_lib.NewSessionHandler(sessionManager)
+	sessionHandler := session_handler_lib.NewSessionHandler(sessionManager, sessionRepo)
 
 	problemHandler.RegisterRoutes(router)
 	userHandler.RegisterRoutes(router)
