@@ -3,11 +3,10 @@ package config
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 )
-
-// Здесь все конфиг данные располагай, кроме паролей, пароли на виртуалке и локально будем хранить
 
 const (
 	ConfigEnvFilePath  = "config/.env"
@@ -15,6 +14,11 @@ const (
 	Host               = "83.166.237.142"
 	DBType             = "postgres"
 	connectToDBTimeout = 5
+	SessionExpTime     = time.Hour * 128
+	CookieLen          = 10
+	CookieName         = "session_id"
+	RedisHost          = "localhost"
+	RedisPort          = ":6379"
 )
 
 var (

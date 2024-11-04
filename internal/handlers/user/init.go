@@ -22,7 +22,7 @@ type Error struct {
 }
 
 type userManager interface {
-	SignUp(ctx context.Context, user models.User) error
+	SignUp(ctx context.Context, newUser models.User) (string, error)
 }
 
 type userStorer interface {

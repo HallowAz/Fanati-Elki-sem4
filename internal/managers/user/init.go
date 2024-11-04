@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"fe-sem4/internal/models/session"
 	"fe-sem4/internal/models/user"
 )
 
@@ -10,10 +11,21 @@ type userStorer interface {
 	GetUserByPhone(ctx context.Context, phone string) (user.User, error)
 }
 
-type Manager struct {
-	userStorer userStorer
+type sessionCreator interface {
+	CreateSession(ctx context.Context, sess session.Session) error
 }
 
-func NewUserManager(userStorer userStorer) *Manager {
-	return &Manager{userStorer: userStorer}
+type Manager struct {
+	userStorer     userStorer
+	sessionCreator sessionCreator
+}
+
+func NewUserManager(
+	userStorer userStorer,
+	sessionCreator sessionCreator,
+) *Manager {
+	return &Manager{
+		userStorer:     userStorer,
+		sessionCreator: sessionCreator,
+	}
 }

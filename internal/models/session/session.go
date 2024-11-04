@@ -1,6 +1,6 @@
 package session
 
 type Session struct {
-	Key   string
-	Value string
+	Key    string
+	UserID uint32
 }
