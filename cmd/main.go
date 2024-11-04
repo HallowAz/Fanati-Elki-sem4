@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fe-sem4/internal/middleware/cors"
 	"fmt"
 	"log"
 	"net/http"
@@ -57,6 +58,8 @@ func main() {
 	problemHandler.RegisterRoutes(router)
 	userHandler.RegisterRoutes(router)
 	sessionHandler.RegisterRoutes(router)
+
+	router.Use(cors.CorsMW)
 
 	go func() {
 		_ = metrics.Listen("127.0.0.1:8082")
