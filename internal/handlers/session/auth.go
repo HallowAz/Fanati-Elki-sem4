@@ -1,6 +1,7 @@
 package session
 
 import (
+	"encoding/json"
 	"fe-sem4/config"
 	"net/http"
 )
@@ -15,8 +16,18 @@ func (s *SessionHandler) Auth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := s.sessionGetter.GetSession(r.Context(), cookie)
+	session, err := s.sessionStorer.GetSession(r.Context(), cookie)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
+
+		return
 	}
+
+	err = json.NewEncoder(w).Encode(&Result{Body: authResponse{UserID: session.UserID}})
+	if err != nil {
+		processError(w, err)
+
+		return
+	}
+
 }

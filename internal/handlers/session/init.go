@@ -24,28 +24,30 @@ type sessionManager interface {
 	Login(ctx context.Context, checkUser models.User) (string, error)
 }
 
-type sessionGetter interface {
+type sessionStorer interface {
 	GetSession(ctx context.Context, key string) (session.Session, error)
+	DeleteSession(_ context.Context, key string) error
 }
 
 type SessionHandler struct {
 	sessionManager sessionManager
-	sessionGetter  sessionGetter
+	sessionStorer  sessionStorer
 }
 
 func NewSessionHandler(
 	sessionManager sessionManager,
-	sessionGetter sessionGetter,
+	sessionStorer sessionStorer,
 ) *SessionHandler {
 	return &SessionHandler{
 		sessionManager: sessionManager,
-		sessionGetter:  sessionGetter,
+		sessionStorer:  sessionStorer,
 	}
 }
 
 func (s *SessionHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/session", s.Login).Methods(http.MethodPost)
 	router.HandleFunc("/session", s.Auth).Methods(http.MethodGet)
+	router.HandleFunc("/session", s.Logout).Methods(http.MethodDelete)
 }
 
 func processError(w http.ResponseWriter, err error) {

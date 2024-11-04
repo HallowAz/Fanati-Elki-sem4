@@ -46,3 +46,7 @@ func (s *SessionRepo) GetSession(_ context.Context, key string) (session.Session
 		UserID: userID,
 	}, nil
 }
+
+func (s *SessionRepo) DeleteSession(_ context.Context, key string) error {
+	return s.cli.Del(keyPrefix + key).Err()
+}

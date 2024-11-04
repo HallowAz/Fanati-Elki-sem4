@@ -13,3 +13,7 @@ func (l *loginRequest) toModel() user.User {
 		Password: l.Password,
 	}
 }
+
+type authResponse struct {
+	UserID uint32 `json:"userID"`
+}
