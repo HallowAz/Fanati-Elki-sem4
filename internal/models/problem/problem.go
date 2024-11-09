@@ -7,6 +7,7 @@ type Problem struct {
 	SpecificLocation string
 	Category         string
 	Media            []string
+	MediaFiles       [][]byte
 	VoteCount        uint16
 	Lat              string
 	Long             string

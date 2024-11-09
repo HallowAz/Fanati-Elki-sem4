@@ -16,10 +16,7 @@ import (
 const idParam = "id"
 
 type formManager interface {
-	// Здесь все методы слоя менеджеров
-	// Если слой менеджера для функции содержит чисто вызов следующего слоя, то не надо
-	// для него делать слой менеджера, создай отдельный интерфейс для таких методов и вызывай
-	// сразу слой репы
+	CreateProblem(ctx context.Context, model models.Problem) error
 }
 
 type problemStorer interface {

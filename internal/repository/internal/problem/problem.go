@@ -2,6 +2,10 @@ package problem
 
 import (
 	"context"
+	"fmt"
+	"io"
+	"log"
+	"os"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -10,6 +14,11 @@ import (
 // Здесь описываются чисто sql запросы и походы в бд,
 // я бы хотел пользоваться pgx сразу, но если не успеваешь, то используй любой
 // Тут чисто функции, без структуры, так будет проще, когда надо будет комбинировать
+
+const (
+	dir    = "public/media/"
+	extJPG = ".jpg"
+)
 
 func CreateProblem(ctx context.Context, tx pgx.Tx, problemRow ProblemRow) error {
 	const query = `
@@ -122,4 +131,54 @@ func GetProblemById(ctx context.Context, tx pgx.Tx, id uint32) (ProblemRow, erro
 	}
 
 	return pgx.CollectOneRow(row, pgx.RowToStructByNameLax[ProblemRow])
+}
+
+func SaveMediaToLocalStorage(_ context.Context, filenames []string, images [][]byte) error {
+	for i := 0; i < len(filenames); i++ {
+		filename := dir + filenames[i] + extJPG
+
+		file, err := os.Create(filename)
+		if err != nil {
+			return fmt.Errorf("error creating img file: %w", err)
+		}
+
+		_, err = file.Write(images[i])
+		if err != nil {
+			return fmt.Errorf("failed to save img file %s: %w", filename, err)
+		}
+
+		err = file.Close()
+		if err != nil {
+			log.Printf("failed to close img file %s: %v", filename, err)
+		}
+	}
+
+	return nil
+}
+
+func GetMediaFromLocalStorage(_ context.Context, filenames []string) ([][]byte, error) {
+	var images = make([][]byte, 0, len(filenames))
+
+	for i := 0; i < len(filenames); i++ {
+		filename := dir + filenames[i] + extJPG
+
+		file, err := os.Open(filename)
+		if err != nil {
+			return nil, fmt.Errorf("error opening img file %s: %w", filename, err)
+		}
+
+		image, err := io.ReadAll(file)
+		if err != nil {
+			return nil, fmt.Errorf("error reading img file %s: %w", filename, err)
+		}
+
+		images = append(images, image)
+
+		err = file.Close()
+		if err != nil {
+			log.Printf("failed to close img file %s: %v", filename, err)
+		}
+	}
+
+	return images, nil
 }

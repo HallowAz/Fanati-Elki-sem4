@@ -9,6 +9,7 @@ type ProblemRow struct {
 	SpecificLocation string   `db:"specific_location"`
 	Category         string   `db:"category"`
 	Media            []string `db:"media"`
+	MediaFiles       [][]byte `db:"mediaFiles"`
 	VoteCount        uint16   `db:"vote_count"`
 	Lat              string   `db:"lat"`
 	Long             string   `db:"long"`
@@ -36,6 +37,7 @@ func (r *ProblemRow) ToModel() problem.Problem {
 		SpecificLocation: r.SpecificLocation,
 		Category:         r.Category,
 		Media:            r.Media,
+		MediaFiles:       r.MediaFiles,
 		VoteCount:        r.VoteCount,
 		Lat:              r.Lat,
 		Long:             r.Long,
