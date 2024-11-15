@@ -16,7 +16,7 @@ import (
 // Тут чисто функции, без структуры, так будет проще, когда надо будет комбинировать
 
 const (
-	dir    = "public/media/"
+	dir    = "../static/media/"
 	extJPG = ".jpg"
 )
 
