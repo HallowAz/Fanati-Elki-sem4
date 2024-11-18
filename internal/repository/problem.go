@@ -121,12 +121,10 @@ func (f *ProblemRepo) GetProblemByID(ctx context.Context, id uint32) (models.Pro
 
 	err = f.db.InTx(ctx, func(ctx context.Context, tx pgx.Tx) error {
 		row, err = problem_db.GetProblemById(ctx, tx, id)
-		if err != nil {
-			return err
-		}
-
-		row.MediaFiles, err = problem_db.GetMediaFromLocalStorage(ctx, row.Media)
 		return err
+
+		//row.MediaFiles, err = problem_db.GetMediaFromLocalStorage(ctx, row.Media)
+		//return err
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
