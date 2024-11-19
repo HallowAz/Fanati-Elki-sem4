@@ -1,13 +1,17 @@
 package problem
 
-import "fe-sem4/internal/models/problem"
+import (
+	"fe-sem4/internal/models/problem"
+	"io"
+	"net/http"
+)
 
 type createProblemRequest struct {
 	Title            string   `json:"title"`
 	Description      string   `json:"description"`
 	SpecificLocation string   `json:"specificLocation"`
 	Category         string   `json:"category"`
-	Media            []string `json:"media"`
+	MediaFiles       [][]byte `json:"mediaFiles"`
 	Lat              string   `json:"lat"`
 	Long             string   `json:"long"`
 }
@@ -18,10 +22,44 @@ func (c *createProblemRequest) toModel() problem.Problem {
 		Description:      c.Description,
 		SpecificLocation: c.SpecificLocation,
 		Category:         c.Category,
-		Media:            c.Media,
+		MediaFiles:       c.MediaFiles,
 		Lat:              c.Lat,
 		Long:             c.Long,
 	}
+}
+
+func parseFormCreateProblem(r *http.Request) (*createProblemRequest, error) {
+	var c createProblemRequest
+
+	c.Title = r.FormValue("title")
+	c.Description = r.FormValue("description")
+	c.SpecificLocation = r.FormValue("specificLocation")
+	c.Category = r.FormValue("category")
+	c.Lat = r.FormValue("lat")
+	c.Long = r.FormValue("long")
+
+	files := r.MultipartForm.File["mediaFiles"]
+
+	for _, fileHeader := range files {
+		file, err := fileHeader.Open()
+		if err != nil {
+			return nil, err
+		}
+
+		bytes, err := io.ReadAll(file)
+		if err != nil {
+			return nil, err
+		}
+
+		c.MediaFiles = append(c.MediaFiles, bytes)
+
+		err = file.Close()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &c, nil
 }
 
 type getProblemsResponse struct {

@@ -1,8 +1,7 @@
 package problem
 
 import (
-	"encoding/json"
-	"io"
+	"log"
 	"net/http"
 )
 
@@ -15,33 +14,23 @@ type Error struct {
 }
 
 func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
-	body, err := io.ReadAll(r.Body)
+	const maxFormSize = 16 << 20
+
+	err := r.ParseMultipartForm(maxFormSize)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-
-		err = json.NewEncoder(w).Encode(&Error{Err: "problems while reading data"})
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-		}
-
+		log.Println("error parsing form:", err)
 		return
 	}
 
-	problemDTO := createProblemRequest{}
-
-	err = json.Unmarshal(body, &problemDTO)
+	problemDTO, err := parseFormCreateProblem(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-
-		err = json.NewEncoder(w).Encode(&Error{Err: "problems while unmarshalling JSON"})
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-		}
-
+		log.Println("error parsing form:", err)
 		return
 	}
 
-	err = h.problemStorer.CreateForm(r.Context(), problemDTO.toModel())
+	err = h.formManager.CreateProblem(r.Context(), problemDTO.toModel())
 	if err != nil {
 		processError(w, err)
 	}

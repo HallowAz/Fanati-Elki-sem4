@@ -33,7 +33,12 @@ func (f *ProblemRepo) CreateForm(ctx context.Context, problem models.Problem) er
 	)
 
 	err = f.db.InTx(ctx, func(ctx context.Context, tx pgx.Tx) error {
-		return problem_db.CreateProblem(ctx, tx, problemRow)
+		err = problem_db.CreateProblem(ctx, tx, problemRow)
+		if err != nil {
+			return err
+		}
+
+		return problem_db.SaveMediaToLocalStorage(ctx, problem.Media, problem.MediaFiles)
 	})
 	if err != nil {
 		return fmt.Errorf("failed to create problem: %w", err)
@@ -117,6 +122,9 @@ func (f *ProblemRepo) GetProblemByID(ctx context.Context, id uint32) (models.Pro
 	err = f.db.InTx(ctx, func(ctx context.Context, tx pgx.Tx) error {
 		row, err = problem_db.GetProblemById(ctx, tx, id)
 		return err
+
+		//row.MediaFiles, err = problem_db.GetMediaFromLocalStorage(ctx, row.Media)
+		//return err
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
