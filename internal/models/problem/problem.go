@@ -11,4 +11,5 @@ type Problem struct {
 	VoteCount        uint16
 	Lat              string
 	Long             string
+	Status           string
 }

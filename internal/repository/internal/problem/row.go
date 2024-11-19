@@ -13,6 +13,7 @@ type ProblemRow struct {
 	VoteCount        uint16   `db:"vote_count"`
 	Lat              string   `db:"lat"`
 	Long             string   `db:"long"`
+	Status           string   `db:"status"`
 }
 
 func NewProblemRow(model problem.Problem) ProblemRow {
@@ -26,6 +27,7 @@ func NewProblemRow(model problem.Problem) ProblemRow {
 		VoteCount:        model.VoteCount,
 		Lat:              model.Lat,
 		Long:             model.Long,
+		Status:           model.Status,
 	}
 }
 
@@ -41,5 +43,6 @@ func (r *ProblemRow) ToModel() problem.Problem {
 		VoteCount:        r.VoteCount,
 		Lat:              r.Lat,
 		Long:             r.Long,
+		Status:           r.Status,
 	}
 }

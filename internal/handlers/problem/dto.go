@@ -14,6 +14,7 @@ type createProblemRequest struct {
 	MediaFiles       [][]byte `json:"mediaFiles"`
 	Lat              string   `json:"lat"`
 	Long             string   `json:"long"`
+	Status           string   `json:"status"`
 }
 
 func (c *createProblemRequest) toModel() problem.Problem {
@@ -25,6 +26,7 @@ func (c *createProblemRequest) toModel() problem.Problem {
 		MediaFiles:       c.MediaFiles,
 		Lat:              c.Lat,
 		Long:             c.Long,
+		Status:           c.Status,
 	}
 }
 
@@ -76,6 +78,7 @@ type getProblemResponse struct {
 	Media            []string `json:"media"`
 	Lat              string   `json:"lat"`
 	Long             string   `json:"long"`
+	Status           string   `json:"status"`
 }
 
 func newGetProblemResponse(model problem.Problem) getProblemResponse {
@@ -89,6 +92,7 @@ func newGetProblemResponse(model problem.Problem) getProblemResponse {
 		VoteCount:        model.VoteCount,
 		Lat:              model.Lat,
 		Long:             model.Long,
+		Status:           model.Status,
 	}
 }
 
@@ -102,6 +106,7 @@ type updateProblemRequest struct {
 	Media            []string `json:"media"`
 	Lat              string   `json:"lat"`
 	Long             string   `json:"long"`
+	Status           string   `json:"status"`
 }
 
 func (u *updateProblemRequest) toModel() problem.Problem {
@@ -115,5 +120,6 @@ func (u *updateProblemRequest) toModel() problem.Problem {
 		Media:            u.Media,
 		Lat:              u.Lat,
 		Long:             u.Long,
+		Status:           u.Status,
 	}
 }

@@ -60,7 +60,8 @@ func GetProblems(ctx context.Context, tx pgx.Tx) ([]ProblemRow, error) {
 		    media,
 		    vote_count,
 		    lat,
-		    long
+		    long,
+		    status
 		FROM problems
 		WHERE is_deleted = false`
 
@@ -82,8 +83,9 @@ func UpdateProblem(ctx context.Context, tx pgx.Tx, problemRow ProblemRow) (pgcon
 	        media = $5,
 	        vote_count = $6,
 	        lat = $7,
-	        long = $8
-		WHERE id = $9 AND is_deleted = false`
+	        long = $8,
+	        status = $9
+		WHERE id = $10 AND is_deleted = false`
 
 	affected, err := tx.Exec(ctx, query,
 		problemRow.Title,
@@ -94,6 +96,7 @@ func UpdateProblem(ctx context.Context, tx pgx.Tx, problemRow ProblemRow) (pgcon
 		problemRow.VoteCount,
 		problemRow.Lat,
 		problemRow.Long,
+		problemRow.Status,
 		problemRow.ID)
 
 	return affected, err
@@ -121,7 +124,8 @@ func GetProblemById(ctx context.Context, tx pgx.Tx, id uint32) (ProblemRow, erro
 		    media,
 		    vote_count,
 		    lat,
-		    long
+		    long,
+		    status
 		FROM problems
 		WHERE id = $1 AND is_deleted = false`
 
