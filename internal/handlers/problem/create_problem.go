@@ -13,7 +13,7 @@ type Error struct {
 	Err string
 }
 
-func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreateProblem(w http.ResponseWriter, r *http.Request) {
 	const maxFormSize = 16 << 20
 
 	err := r.ParseMultipartForm(maxFormSize)
@@ -30,7 +30,7 @@ func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.formManager.CreateProblem(r.Context(), problemDTO.toModel())
+	err = h.problemManager.CreateProblem(r.Context(), problemDTO.toModel())
 	if err != nil {
 		processError(w, err)
 	}

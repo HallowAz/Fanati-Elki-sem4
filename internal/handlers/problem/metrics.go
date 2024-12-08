@@ -8,7 +8,7 @@ import (
 )
 
 var requestMetrics = promauto.NewSummaryVec(prometheus.SummaryOpts{
-	Namespace:  "forms",
+	Namespace:  "problems",
 	Subsystem:  "http",
 	Name:       "request",
 	Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001},

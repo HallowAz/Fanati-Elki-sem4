@@ -15,12 +15,12 @@ import (
 
 const idParam = "id"
 
-type formManager interface {
+type problemManager interface {
 	CreateProblem(ctx context.Context, model models.Problem) error
 }
 
 type problemStorer interface {
-	CreateForm(ctx context.Context, problem models.Problem) error
+	CreateProblem(ctx context.Context, problem models.Problem) error
 	GetProblems(ctx context.Context) ([]models.Problem, error)
 	UpdateProblem(ctx context.Context, problem models.Problem) error
 	DeleteProblem(ctx context.Context, id uint32) error
@@ -28,16 +28,16 @@ type problemStorer interface {
 }
 
 type Handler struct {
-	formManager   formManager
+	problemManager   problemManager
 	problemStorer problemStorer
 }
 
-func NewFormHandler(formManager formManager, problemStorer problemStorer) *Handler {
-	return &Handler{formManager: formManager, problemStorer: problemStorer}
+func NewProblemHandler(problemManager problemManager, problemStorer problemStorer) *Handler {
+	return &Handler{problemManager: problemManager, problemStorer: problemStorer}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/problems", h.CreateForm).Methods(http.MethodPost)
+	router.HandleFunc("/problems", h.CreateProblem).Methods(http.MethodPost)
 	router.HandleFunc("/problems", h.GetProblems).Methods(http.MethodGet)
 	router.HandleFunc("/problems/{id}", h.GetProblemByID).Methods(http.MethodGet)
 	router.HandleFunc("/problems/{id}", h.UpdateProblem).Methods(http.MethodPatch)

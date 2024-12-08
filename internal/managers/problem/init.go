@@ -8,16 +8,16 @@ import (
 
 // Также все методы в отдельный файлах в том же пакете. Название файла - название метода
 
-type formStorer interface {
-	CreateForm(ctx context.Context, problem models.Problem) error
+type problemStorer interface {
+	CreateProblem(ctx context.Context, problem models.Problem) error
 }
 
 type Manager struct {
-	formStorer formStorer
+	problemStorer problemStorer
 }
 
-func NewManager(formStorer formStorer) *Manager {
+func NewManager(problemStorer problemStorer) *Manager {
 	return &Manager{
-		formStorer: formStorer,
+		problemStorer: problemStorer,
 	}
 }

@@ -46,7 +46,7 @@ func main() {
 
 	problemRepo := repository.NewProblemRepo(dbTX)
 	problemManager := problem_managers_lib.NewManager(problemRepo)
-	problemHandler := problem_handlers_lib.NewFormHandler(problemManager, problemRepo)
+	problemHandler := problem_handlers_lib.NewProblemHandler(problemManager, problemRepo)
 
 	userRepo := repository.NewUserRepo(dbTX)
 	sessionRepo := repository.NewSessionRepo(redisCli)

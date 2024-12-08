@@ -14,5 +14,5 @@ func (m *Manager) CreateProblem(ctx context.Context, model modelLib.Problem) err
 		model.Media = append(model.Media, uuid.New().String())
 	}
 
-	return m.formStorer.CreateForm(ctx, model)
+	return m.problemStorer.CreateProblem(ctx, model)
 }

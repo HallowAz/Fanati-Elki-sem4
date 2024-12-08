@@ -26,7 +26,7 @@ func NewProblemRepo(db db.TxCommitter) *ProblemRepo {
 // Это слой репы, здесь открывается транзакция и вызываются методы походов в базу и парсится ответ из бд
 // Здесь не надо разделять методы на файлы, поскольку это вызовет потом проблемы
 
-func (f *ProblemRepo) CreateForm(ctx context.Context, problem models.Problem) error {
+func (f *ProblemRepo) CreateProblem(ctx context.Context, problem models.Problem) error {
 	var (
 		problemRow = problem_db.NewProblemRow(problem)
 		err        error
