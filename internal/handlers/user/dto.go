@@ -16,7 +16,7 @@ type createUserRequest struct {
 }
 
 func (r *createUserRequest) ToModel() user.User {
-	birthday, _ := time.Parse("01.02.2004", r.Birthday)
+	birthday, _ := time.Parse(time.DateOnly, r.Birthday)
 
 	return user.User{
 		Username:  r.Username,
