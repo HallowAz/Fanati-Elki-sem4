@@ -7,7 +7,7 @@ import (
 
 func NewRedisClient() *redis.Client {
 	return redis.NewClient(&redis.Options{
-		Addr: config.RedisHost + config.RedisPort,
+		Addr: config.Host + config.RedisPort,
 	})
 }
 
