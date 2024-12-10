@@ -26,7 +26,7 @@ func (s *SessionHandler) Login(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		err = json.NewEncoder(w).Encode(&Error{Err: "problems while unmarshal;ing data"})
+		err = json.NewEncoder(w).Encode(&Error{Err: "problems while unmarshalling data"})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		}

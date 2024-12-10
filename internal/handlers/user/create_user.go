@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fe-sem4/config"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -24,6 +25,7 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	req := createUserRequest{}
 	err = json.Unmarshal(body, &req)
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		err = json.NewEncoder(w).Encode(&Error{Err: "problems while unmarshalling json"})
 		if err != nil {
