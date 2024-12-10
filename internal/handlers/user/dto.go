@@ -2,6 +2,7 @@ package user
 
 import (
 	"fe-sem4/internal/models/user"
+	"fe-sem4/internal/tools"
 	"time"
 )
 
@@ -16,7 +17,7 @@ type createUserRequest struct {
 }
 
 func (r *createUserRequest) ToModel() user.User {
-	birthday, _ := time.Parse(time.DateOnly, r.Birthday)
+	birthday, _ := tools.ParseDDMMYYYYToYYYYMMDD(r.Birthday)
 
 	return user.User{
 		Username:  r.Username,
