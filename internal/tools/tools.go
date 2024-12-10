@@ -25,7 +25,7 @@ func GenerateRandomString(length int) string {
 }
 
 func ParseDDMMYYYYToYYYYMMDD(date string) (time.Time, error) {
-	date = strings.Replace(date, "-", ".", -1)
+	date = strings.Replace(date, ".", "-", -1)
 
 	return time.Parse(time.DateOnly, date)
 }
