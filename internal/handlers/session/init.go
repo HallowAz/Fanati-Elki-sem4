@@ -52,7 +52,8 @@ func (s *SessionHandler) RegisterRoutes(router *mux.Router) {
 
 func processError(w http.ResponseWriter, err error) {
 	switch {
-	case errors.Is(err, domain_error.ErrCredentialsIncorrect):
+	case errors.Is(err, domain_error.ErrCredentialsIncorrect) ||
+		errors.Is(err, domain_error.ErrUserNotFound):
 		w.WriteHeader(http.StatusBadRequest)
 		err = json.NewEncoder(w).Encode(&Error{Err: err.Error()})
 		if err != nil {
