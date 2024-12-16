@@ -1,6 +1,7 @@
 package problem
 
 import (
+	"fe-sem4/config"
 	"log"
 	"net/http"
 )
@@ -14,9 +15,23 @@ type Error struct {
 }
 
 func (h *Handler) CreateProblem(w http.ResponseWriter, r *http.Request) {
+	cookie := r.Header.Get(config.CookieHeader)
+	if cookie == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+
+		return
+	}
+
+	_, err := h.sessionStorer.GetSession(r.Context(), cookie)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+
+		return
+	}
+
 	const maxFormSize = 16 << 20
 
-	err := r.ParseMultipartForm(maxFormSize)
+	err = r.ParseMultipartForm(maxFormSize)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("error parsing form:", err)

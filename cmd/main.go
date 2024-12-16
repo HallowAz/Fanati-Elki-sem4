@@ -44,16 +44,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	problemRepo := repository.NewProblemRepo(dbTX)
-	problemManager := problem_managers_lib.NewManager(problemRepo)
-	problemHandler := problem_handlers_lib.NewProblemHandler(problemManager, problemRepo)
-
 	userRepo := repository.NewUserRepo(dbTX)
 	sessionRepo := repository.NewSessionRepo(redisCli)
 	userManager := user_managers_lib.NewUserManager(userRepo, sessionRepo)
 	userHandler := user_handler_lib.NewUserHandler(userManager, userRepo)
 	sessionManager := session_manager_lib.NewSessionManager(sessionRepo, userRepo)
 	sessionHandler := session_handler_lib.NewSessionHandler(sessionManager, sessionRepo)
+
+	problemRepo := repository.NewProblemRepo(dbTX)
+	problemManager := problem_managers_lib.NewManager(problemRepo)
+	problemHandler := problem_handlers_lib.NewProblemHandler(problemManager, problemRepo, sessionRepo)
 
 	problemHandler.RegisterRoutes(router)
 	userHandler.RegisterRoutes(router)

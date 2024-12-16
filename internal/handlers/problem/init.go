@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fe-sem4/internal/models/session"
 	"log"
 	"net/http"
 
@@ -27,13 +28,27 @@ type problemStorer interface {
 	GetProblemByID(ctx context.Context, id uint32) (models.Problem, error)
 }
 
-type Handler struct {
-	problemManager   problemManager
-	problemStorer problemStorer
+type sessionStorer interface {
+	GetSession(ctx context.Context, key string) (session.Session, error)
+	DeleteSession(_ context.Context, key string) error
 }
 
-func NewProblemHandler(problemManager problemManager, problemStorer problemStorer) *Handler {
-	return &Handler{problemManager: problemManager, problemStorer: problemStorer}
+type Handler struct {
+	problemManager problemManager
+	problemStorer  problemStorer
+	sessionStorer  sessionStorer
+}
+
+func NewProblemHandler(
+	problemManager problemManager,
+	problemStorer problemStorer,
+	sessionStorer sessionStorer,
+) *Handler {
+	return &Handler{
+		problemManager: problemManager,
+		problemStorer:  problemStorer,
+		sessionStorer:  sessionStorer,
+	}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {

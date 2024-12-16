@@ -2,6 +2,7 @@ package problem
 
 import (
 	"encoding/json"
+	"fe-sem4/config"
 	"io"
 	"net/http"
 
@@ -10,6 +11,20 @@ import (
 )
 
 func (h *Handler) UpdateProblem(w http.ResponseWriter, r *http.Request) {
+	cookie := r.Header.Get(config.CookieHeader)
+	if cookie == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+
+		return
+	}
+
+	_, err := h.sessionStorer.GetSession(r.Context(), cookie)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 
 	vars := mux.Vars(r)
