@@ -30,7 +30,7 @@ func (h *Handler) CreateProblem(w http.ResponseWriter, r *http.Request) {
 
 	const maxFormSize = 16 << 20
 
-	err = r.ParseMultipartForm(maxFormSize)
+	err := r.ParseMultipartForm(maxFormSize)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("error parsing form:", err)
