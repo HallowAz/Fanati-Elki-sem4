@@ -1,7 +1,6 @@
 package problem
 
 import (
-	"fe-sem4/config"
 	"log"
 	"net/http"
 )
@@ -15,19 +14,19 @@ type Error struct {
 }
 
 func (h *Handler) CreateProblem(w http.ResponseWriter, r *http.Request) {
-	cookie := r.Header.Get(config.CookieHeader)
-	if cookie == "" {
-		w.WriteHeader(http.StatusUnauthorized)
-
-		return
-	}
-
-	_, err := h.sessionStorer.GetSession(r.Context(), cookie)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-
-		return
-	}
+	//cookie := r.Header.Get(config.CookieHeader)
+	//if cookie == "" {
+	//	w.WriteHeader(http.StatusUnauthorized)
+	//
+	//	return
+	//}
+	//
+	//_, err := h.sessionStorer.GetSession(r.Context(), cookie)
+	//if err != nil {
+	//	w.WriteHeader(http.StatusUnauthorized)
+	//
+	//	return
+	//}
 
 	const maxFormSize = 16 << 20
 
